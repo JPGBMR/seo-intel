@@ -1,0 +1,105 @@
+{% extends 'layout.html' %}
+{% block content %}
+<section class="mb-3">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+            <h1 class="mb-1">Trend Report</h1>
+            <p class="text-muted mb-0">Report date: {{ params.report_date }} · Lookback: {{ params.lookback }} days</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a class="btn btn-sm btn-outline-primary" href="{{ export_csv_url }}">Export CSV</a>
+            <a class="btn btn-sm btn-outline-secondary" href="{{ export_json_url }}">Export JSON</a>
+        </div>
+    </div>
+</section>
+{% if warnings %}
+<section class="mb-3">
+    {% for warning in warnings %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ warning }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+</section>
+{% endif %}
+<section class="row g-3">
+    <div class="col-lg-5">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">Summary</h5>
+                <p class="display-6 mb-1">{{ summary.total_topics or 0 }}</p>
+                <p class="text-muted">topics merged across {{ summary.lookback_days }}-day window.</p>
+                <ul class="summary-list">
+                    <li><strong>{{ summary.fast_movers }}</strong> fast movers (high recency)</li>
+                    <li><strong>{{ summary.merged_mentions }}</strong> total mentions clustered</li>
+                    <li>Sources: Google Trends, Reddit, custom RSS</li>
+                </ul>
+                <p class="small text-muted mb-0">Keyword boost: +0.1 per match (max +0.3) applied before scoring.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="card-title mb-0">Top Topics by Trend Score</h5>
+                    <span class="text-muted small">Scaled 0–100</span>
+                </div>
+                <canvas id="topicsChart" height="220"></canvas>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="mt-4">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+                <h5 class="mb-0">Merged Topics</h5>
+                <input type="search" class="form-control search-input" id="topicSearch" placeholder="Filter topics">
+            </div>
+            {% if topics %}
+            <div class="table-responsive">
+                <table class="table table-striped align-middle" id="topicsTable">
+                    <thead>
+                        <tr>
+                            <th>Topic</th>
+                            <th>Mentions</th>
+                            <th>Source</th>
+                            <th>Trend_Score</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for topic in topics %}
+                        <tr>
+                            <td>{{ topic.Topic }}</td>
+                            <td>{{ topic.Mentions }}</td>
+                            <td>
+                                {{ topic.Source }}
+                                <span class="source-badges">
+                                {% for badge in topic.sources_list %}
+                                    <span class="badge source-badge source-{{ badge }}">{{ badge }}</span>
+                                {% endfor %}
+                                </span>
+                            </td>
+                            <td>{{ '%.2f'|format(topic.Trend_Score) }}</td>
+                            <td>{{ topic.Date }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                <p class="text-muted mb-0">No topics detected. Try expanding the lookback window or adding more feeds.</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% if topics %}
+<script>
+window.addEventListener('DOMContentLoaded', function () {
+    TMF.renderChart('topicsChart', {{ chart_data|safe }});
+});
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,6 @@
+Flask>=2.3
+requests>=2.31
+feedparser>=6.0
+pandas>=2.0
+beautifulsoup4>=4.12
+python-dateutil>=2.8
