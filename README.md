@@ -1,5 +1,6 @@
 # traffic-magnet-finder
 
+[![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)](https://github.com/JPGBMR/seo-intel)
 Traffic Magnet Finder is a Flask web app that fuses public Google Trends RSS, subreddit RSS, and curated tech/business RSS feeds to surface fast-rising topics for SEO planning or editorial calendars. It normalizes headlines, groups near-duplicates, scores momentum, and exports ranked CSV/JSON reports.
 
 ## Quickstart
@@ -54,3 +55,15 @@ Topic,Mentions,Source,Trend_Score,Date
 
 ## Privacy
 No API keys or user data are stored. All processing occurs locally using publicly accessible feeds.
+
+## Getting Started
+
+```bash
+pip install -r requirements.txt
+python app.py
+```
+
+Open [http://localhost:5000](http://localhost:5000) in your browser.
+
+---
+*Part of the [JPGBMR](https://github.com/JPGBMR) open-source portfolio.*
