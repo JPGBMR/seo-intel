@@ -1,0 +1,51 @@
+{% extends 'layout.html' %}
+{% block content %}
+<section class="mb-4">
+    <h1 class="mb-3">Multi-source Trend Detector</h1>
+    <p class="text-muted">Combine Google Trends, Reddit chatter, and hand-picked RSS feeds to uncover topics worth targeting today.</p>
+</section>
+<section>
+    <form action="{{ url_for('results') }}" method="get" class="card shadow-sm p-4">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label for="keywords" class="form-label">Keywords (comma-separated)
+                    <span class="info-badge" data-bs-toggle="tooltip" title="Whole-word keyword matches add +0.1 to frequency (max +0.3) before scoring.">?</span>
+                </label>
+                <input type="text" class="form-control" id="keywords" name="keywords" value="{{ params.keywords_raw }}" placeholder="ai, climate, fintech">
+                <div class="form-text">Optional boost when your priority terms appear in a topic.</div>
+            </div>
+            <div class="col-md-3">
+                <label for="geo" class="form-label">Google Trends GEO</label>
+                <input type="text" class="form-control" id="geo" name="geo" value="{{ params.geo }}" placeholder="US">
+            </div>
+            <div class="col-md-3">
+                <label for="lookback" class="form-label">Lookback (days)</label>
+                <input type="number" min="1" class="form-control" id="lookback" name="lookback" value="{{ params.lookback }}">
+            </div>
+            <div class="col-md-6">
+                <label for="subreddits" class="form-label">Subreddits</label>
+                <input type="text" class="form-control" id="subreddits" name="subreddits" value="{{ params.subreddits_raw }}" placeholder="Entrepreneur,Startups,SaaS">
+                <div class="form-text">Comma-separated list; no OAuth required.</div>
+            </div>
+            <div class="col-md-6">
+                <label for="feeds" class="form-label">RSS Feeds</label>
+                <textarea id="feeds" class="form-control" name="feeds" rows="3">{{ params.feeds_raw }}</textarea>
+                <div class="form-text">Include TechCrunch, Hacker News, The Verge, or any RSS URL.</div>
+            </div>
+            <div class="col-md-4">
+                <label for="limit" class="form-label">Limit per Source</label>
+                <input type="number" min="10" class="form-control" id="limit" name="limit" value="{{ params.limit }}">
+            </div>
+            <div class="col-md-4">
+                <label for="report_date" class="form-label">Report Date</label>
+                <input type="date" class="form-control" id="report_date" name="report_date" value="{{ params.report_date }}">
+            </div>
+        </div>
+        <div class="d-flex flex-wrap gap-2 mt-4">
+            <button type="submit" class="btn btn-primary">Run Analysis</button>
+            <button type="submit" class="btn btn-outline-primary" formaction="{{ url_for('export_csv') }}" formmethod="get">Export CSV</button>
+            <button type="submit" class="btn btn-outline-secondary" formaction="{{ url_for('export_json') }}" formmethod="get">Export JSON</button>
+        </div>
+    </form>
+</section>
+{% endblock %}
